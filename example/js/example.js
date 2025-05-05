@@ -1,4 +1,3 @@
-
 /*
  * Camera Buttons
  */
@@ -73,7 +72,7 @@ var CameraButtons = function(blueprint3d) {
   }
 
   function zoomOut(e) {
-    e.preventDefault;
+    e.preventDefault();
     orbitControls.dollyOut(1.1);
     orbitControls.update();
   }
@@ -366,6 +365,103 @@ var TextureSelector = function (blueprint3d, sideMenu) {
     });
   }
 
+  function initWallColorSelectors() {
+    // Handle color preset clicks
+    $(".color-preset").click(function() {
+      var color = $(this).attr("data-color");
+      $("#wall-color-picker").val(color);
+      $("#color-preview").css("background-color", color);
+      $(".color-preset").removeClass("active");
+      $(this).addClass("active");
+      updateRGBInputs(color);
+    });
+
+    // Handle color picker changes
+    $("#wall-color-picker").on("input change", function() {
+      var colorHex = $(this).val();
+      $("#color-preview").css("background-color", colorHex);
+      updateRGBInputs(colorHex);
+    });
+
+    // Handle RGB input changes
+    $(".color-component").on("input change", function() {
+      var r = $("#wall-color-r").val();
+      var g = $("#wall-color-g").val();
+      var b = $("#wall-color-b").val();
+      var colorHex = rgbToHex(r, g, b);
+      $("#wall-color-picker").val(colorHex);
+      $("#color-preview").css("background-color", colorHex);
+    });
+
+    // Handle opacity slider
+    $("#wall-color-opacity").on("input change", function() {
+      var opacity = $(this).val();
+      $("#opacity-value").text(opacity + "%");
+    });
+
+    // Handle apply color button click
+    $("#apply-wall-color").click(function() {
+      if (currentTarget) {
+        var colorHex = $("#wall-color-picker").val();
+        var opacity = $("#wall-color-opacity").val() / 100;
+        setWallColor(colorHex, opacity);
+      }
+    });
+  }
+
+  // Helper function to convert RGB to Hex
+  function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (parseInt(r) << 16) + (parseInt(g) << 8) + parseInt(b)).toString(16).slice(1);
+  }
+
+  // Helper function to convert Hex to RGB
+  function hexToRgb(hex) {
+    // Remove # if present
+    hex = hex.replace(/^#/, '');
+    
+    // Parse the hex values
+    var bigint = parseInt(hex, 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
+    
+    return { r: r, g: g, b: b };
+  }
+
+  // Update RGB inputs based on hex color
+  function updateRGBInputs(hexColor) {
+    var rgb = hexToRgb(hexColor);
+    $("#wall-color-r").val(rgb.r);
+    $("#wall-color-g").val(rgb.g);
+    $("#wall-color-b").val(rgb.b);
+  }
+
+  function setWallColor(colorHex, opacity) {
+    if (!currentTarget) return;
+    
+    // Create a solid color texture
+    var canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    var ctx = canvas.getContext('2d');
+    
+    // If opacity is not 100%, create a semi-transparent color
+    if (opacity !== undefined && opacity < 1) {
+      var rgb = hexToRgb(colorHex);
+      ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+    } else {
+      ctx.fillStyle = colorHex;
+    }
+    
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Convert canvas to data URL
+    var dataURL = canvas.toDataURL();
+    
+    // Set the texture with the data URL
+    currentTarget.setTexture(dataURL, true, 0);
+  }
+
   function init() {
     three.wallClicked.add(wallClicked);
     three.floorClicked.add(floorClicked);
@@ -373,6 +469,7 @@ var TextureSelector = function (blueprint3d, sideMenu) {
     three.nothingClicked.add(reset);
     sideMenu.stateChangeCallbacks.add(reset);
     initTextureSelectors();
+    initWallColorSelectors();
   }
 
   function wallClicked(halfEdge) {
@@ -396,61 +493,274 @@ var TextureSelector = function (blueprint3d, sideMenu) {
 }
 
 /*
+ * Reference Image for Floorplanner
+ */
+
+var FloorplannerReferenceImage = function(floorplanner) {
+  var scope = this;
+  var floorplanner = floorplanner;
+  var canvasElement = $("#floorplanner-canvas");
+  var referenceImage = null;
+  var imageElement = null;
+  
+  // Image properties
+  var imageScale = 100; // percentage
+  var imageOpacity = 50; // percentage
+  var imageX = 0; // position offset X
+  var imageY = 0; // position offset Y
+  var imageVisible = true;
+  
+  // Movement increments
+  var positionIncrement = 10; // pixels
+  var scaleIncrement = 5; // percentage
+
+  function init() {
+    // Create the image element
+    imageElement = $('<img id="reference-image" />');
+    canvasElement.parent().append(imageElement);
+    
+    // Set up event handlers
+    $("#reference-image-file").change(handleImageUpload);
+    $("#reference-image-opacity").on("input change", handleOpacityChange);
+    $("#reference-image-scale").on("input change", handleScaleChange);
+    $("#reference-image-visible").change(handleVisibilityChange);
+    $("#remove-reference-image").click(removeReferenceImage);
+    
+    // Position control buttons
+    $("#move-up-btn").click(function() { moveImage(0, -positionIncrement); });
+    $("#move-down-btn").click(function() { moveImage(0, positionIncrement); });
+    $("#move-left-btn").click(function() { moveImage(-positionIncrement, 0); });
+    $("#move-right-btn").click(function() { moveImage(positionIncrement, 0); });
+    $("#move-center-btn").click(centerImage);
+    
+    // Scale buttons
+    $("#scale-up-btn").click(function() { 
+      $("#reference-image-scale").val(parseInt($("#reference-image-scale").val()) + scaleIncrement);
+      handleScaleChange();
+    });
+    $("#scale-down-btn").click(function() { 
+      $("#reference-image-scale").val(parseInt($("#reference-image-scale").val()) - scaleIncrement);
+      handleScaleChange();
+    });
+  }
+  
+  function handleImageUpload(event) {
+    var file = event.target.files[0];
+    if (file && file.type.match('image.*')) {
+      var reader = new FileReader();
+      
+      reader.onload = function(e) {
+        referenceImage = e.target.result;
+        imageElement.attr('src', referenceImage);
+        
+        // Reset position and apply initial settings
+        imageX = 0;
+        imageY = 0;
+        imageScale = 100;
+        imageOpacity = 50;
+        
+        // Update UI
+        $("#reference-image-opacity").val(imageOpacity);
+        $("#opacity-value-ref").text(imageOpacity + "%");
+        $("#reference-image-scale").val(imageScale);
+        $("#reference-image-visible").prop('checked', true);
+        
+        // Show controls and remove button
+        $("#reference-image-controls").show();
+        $("#remove-reference-image").show();
+        
+        // Apply settings
+        updateImageStyles();
+        
+        // Center the image once it's loaded
+        imageElement.on('load', function() {
+          centerImage();
+        });
+      };
+      
+      reader.readAsDataURL(file);
+    }
+  }
+  
+  function handleOpacityChange() {
+    imageOpacity = $("#reference-image-opacity").val();
+    $("#opacity-value-ref").text(imageOpacity + "%");
+    updateImageStyles();
+  }
+  
+  function handleScaleChange() {
+    imageScale = $("#reference-image-scale").val();
+    updateImageStyles();
+  }
+  
+  function handleVisibilityChange() {
+    imageVisible = $("#reference-image-visible").is(":checked");
+    updateImageStyles();
+  }
+  
+  function moveImage(deltaX, deltaY) {
+    imageX += deltaX;
+    imageY += deltaY;
+    updateImageStyles();
+  }
+  
+  function centerImage() {
+    // Center the image on the canvas
+    if (!imageElement || !imageElement[0].complete) return;
+    
+    var canvasWidth = canvasElement.width();
+    var canvasHeight = canvasElement.height();
+    var imgWidth = imageElement[0].naturalWidth * (imageScale / 100);
+    var imgHeight = imageElement[0].naturalHeight * (imageScale / 100);
+    
+    imageX = (canvasWidth - imgWidth) / 2;
+    imageY = (canvasHeight - imgHeight) / 2;
+    
+    updateImageStyles();
+  }
+  
+  function updateImageStyles() {
+    if (!imageElement) return;
+    
+    // Make sure the image is positioned relative to the canvas, not covering controls
+    imageElement.css({
+      'opacity': imageOpacity / 100,
+      'transform': 'translate(' + imageX + 'px, ' + imageY + 'px) scale(' + imageScale / 100 + ')',
+      'transform-origin': '0 0',
+      'display': imageVisible ? 'block' : 'none',
+      'width': 'auto',
+      'height': 'auto',
+      'max-width': 'none',
+      'max-height': 'none',
+      'pointer-events': 'none' // Ensure clicks pass through to canvas
+    });
+  }
+  
+  function removeReferenceImage() {
+    imageElement.attr('src', '');
+    referenceImage = null;
+    
+    // Hide controls and remove button
+    $("#reference-image-controls").hide();
+    $("#remove-reference-image").hide();
+    
+    // Reset file input
+    $("#reference-image-file").val('');
+  }
+  
+  init();
+}
+
+/*
  * Floorplanner controls
  */
 
 var ViewerFloorplanner = function(blueprint3d) {
 
+  var scope = this;
   var canvasWrapper = '#floorplanner';
-
-  // buttons
-  var move = '#move';
-  var remove = '#delete';
-  var draw = '#draw';
-
-  var activeStlye = 'btn-primary disabled';
+  var cmPerFoot = 30.48;
+  var pixelsPerFoot = 15.0;
+  var cmPerPixel = cmPerFoot * (1.0 / pixelsPerFoot);
+  var defaultWallColor = "#dddddd"; // Default gray wall color
+  var drawModeWallColor = "#8A2BE2"; // Violet color for draw mode
+  var currentWallColor = defaultWallColor;
 
   this.floorplanner = blueprint3d.floorplanner;
+  var canvasElement = '#floorplanner-canvas';
+  var activeStlye = "btn-primary";
 
-  var scope = this;
-
-  function init() {
-
-    $( window ).resize( scope.handleWindowResize );
+  this.init = function() {
+    $(window).resize(scope.handleWindowResize);
     scope.handleWindowResize();
 
-    // mode buttons
+    // Draw mode is default
+    scope.floorplanner.setMode(BP3D.Floorplanner.floorplannerModes.DRAW);
+
     scope.floorplanner.modeResetCallbacks.add(function(mode) {
-      $(draw).removeClass(activeStlye);
-      $(remove).removeClass(activeStlye);
-      $(move).removeClass(activeStlye);
+      $(canvasElement).css('cursor', 'default');
       if (mode == BP3D.Floorplanner.floorplannerModes.MOVE) {
-          $(move).addClass(activeStlye);
+        $("#move").addClass(activeStlye);
       } else if (mode == BP3D.Floorplanner.floorplannerModes.DRAW) {
-          $(draw).addClass(activeStlye);
+        $("#draw").addClass(activeStlye);
       } else if (mode == BP3D.Floorplanner.floorplannerModes.DELETE) {
-          $(remove).addClass(activeStlye);
+        $("#delete").addClass(activeStlye);
       }
 
+      // Apply violet wall color when in draw mode, default color otherwise
       if (mode == BP3D.Floorplanner.floorplannerModes.DRAW) {
-        $("#draw-walls-hint").show();
-        scope.handleWindowResize();
+        applyWallColor(drawModeWallColor);
       } else {
-        $("#draw-walls-hint").hide();
+        applyWallColor(defaultWallColor);
       }
     });
 
-    $(move).click(function(){
+    $("#move").click(function() {
+      $("#draw").removeClass(activeStlye);
+      $("#delete").removeClass(activeStlye);
+      $(this).addClass(activeStlye);
       scope.floorplanner.setMode(BP3D.Floorplanner.floorplannerModes.MOVE);
     });
 
-    $(draw).click(function(){
+    $("#draw").click(function() {
+      $("#move").removeClass(activeStlye);
+      $("#delete").removeClass(activeStlye);
+      $(this).addClass(activeStlye);
       scope.floorplanner.setMode(BP3D.Floorplanner.floorplannerModes.DRAW);
     });
 
-    $(remove).click(function(){
+    $("#delete").click(function() {
+      $("#move").removeClass(activeStlye);
+      $("#draw").removeClass(activeStlye);
+      $(this).addClass(activeStlye);
       scope.floorplanner.setMode(BP3D.Floorplanner.floorplannerModes.DELETE);
     });
+  }
+
+  // Function to apply wall color
+  function applyWallColor(color) {
+    currentWallColor = color;
+    
+    // Add a style element if it doesn't exist
+    if ($("#wall-color-override").length === 0) {
+      $("head").append('<style id="wall-color-override"></style>');
+    }
+    
+    // Override wall colors with selected color - target all possible wall selectors
+    $("#wall-color-override").html(`
+      /* Target all possible wall elements */
+      .wall, 
+      line.wall, 
+      path.wall, 
+      #floorplanner-canvas .wall,
+      #floorplanner svg .wall,
+      svg .wall {
+        stroke: ${color} !important;
+      }
+      
+      /* Target all possible hover states */
+      .wall:hover, 
+      line.wall:hover, 
+      path.wall:hover,
+      #floorplanner-canvas .wall:hover,
+      #floorplanner svg .wall:hover,
+      svg .wall:hover {
+        stroke: ${color === defaultWallColor ? "#008cba" : "#9370DB"} !important;
+      }
+    `);
+    
+    // Also try to directly modify any existing wall elements
+    setTimeout(function() {
+      $("svg .wall").attr("stroke", color);
+    }, 100);
+  }
+
+  // Public method to set wall color
+  this.setWallColor = function(color) {
+    drawModeWallColor = color;
+    if (scope.floorplanner.getMode() == BP3D.Floorplanner.floorplannerModes.DRAW) {
+      applyWallColor(drawModeWallColor);
+    }
   }
 
   this.updateFloorplanView = function() {
@@ -458,12 +768,17 @@ var ViewerFloorplanner = function(blueprint3d) {
   }
 
   this.handleWindowResize = function() {
-    $(canvasWrapper).height(window.innerHeight - $(canvasWrapper).offset().top);
+    $(canvasElement).height(window.innerHeight - $(canvasElement).offset().top);
     scope.floorplanner.resizeView();
   };
 
-  init();
-}; 
+  this.reset = function() {
+    scope.floorplanner.reset();
+  }
+  
+  // Initialize
+  this.init();
+}
 
 var mainControls = function(blueprint3d) {
   var blueprint3d = blueprint3d;
@@ -503,6 +818,66 @@ var mainControls = function(blueprint3d) {
 }
 
 /*
+ * Wall Color Manager
+ */
+
+var WallColorManager = function(viewerFloorplanner) {
+  var scope = this;
+  var viewerFloorplanner = viewerFloorplanner;
+  
+  // Default wall colors
+  var wallColor = "#8A2BE2"; // Violet color for walls
+  var wallHoverColor = "#9370DB"; // Medium purple for hover state
+  
+  function init() {
+    // Set up event handlers for color pickers
+    $("#wall-draw-color-picker").on("input change", function() {
+      var color = $(this).val();
+      $("#wall-color-preview").css("background-color", color);
+    });
+    
+    $("#wall-hover-color-picker").on("input change", function() {
+      var color = $(this).val();
+      $("#wall-hover-color-preview").css("background-color", color);
+    });
+    
+    // Set up event handlers for preset colors
+    $(".wall-color-presets .color-preset").click(function() {
+      var wallColorValue = $(this).attr("data-wall");
+      var hoverColorValue = $(this).attr("data-hover");
+      
+      // Update color pickers and previews
+      $("#wall-draw-color-picker").val(wallColorValue);
+      $("#wall-color-preview").css("background-color", wallColorValue);
+      
+      $("#wall-hover-color-picker").val(hoverColorValue);
+      $("#wall-hover-color-preview").css("background-color", hoverColorValue);
+      
+      // Highlight the selected preset
+      $(".wall-color-presets .color-preset").removeClass("active");
+      $(this).addClass("active");
+    });
+    
+    // Apply wall colors button
+    $("#apply-wall-colors").click(function() {
+      wallColor = $("#wall-draw-color-picker").val();
+      wallHoverColor = $("#wall-hover-color-picker").val();
+      
+      // Update the floorplanner wall color
+      viewerFloorplanner.setWallColor(wallColor);
+      
+      // Close the modal
+      $("#wall-color-modal").modal("hide");
+    });
+    
+    // Highlight the default violet color preset
+    $(".wall-color-presets .color-preset[data-wall='#8A2BE2']").addClass("active");
+  }
+  
+  init();
+};
+
+/*
  * Initialize!
  */
 
@@ -524,6 +899,8 @@ $(document).ready(function() {
   var sideMenu = new SideMenu(blueprint3d, viewerFloorplanner, modalEffects);
   var textureSelector = new TextureSelector(blueprint3d, sideMenu);        
   var cameraButtons = new CameraButtons(blueprint3d);
+  var floorplannerReferenceImage = new FloorplannerReferenceImage(viewerFloorplanner.floorplanner);
+  var wallColorManager = new WallColorManager(viewerFloorplanner);
   mainControls(blueprint3d);
 
   // This serialization format needs work

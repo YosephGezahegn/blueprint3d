@@ -88,6 +88,7 @@ div {
 }
 
 #floorplanner {
+  position: relative;
   display: none;
 }
 
@@ -114,10 +115,14 @@ div {
 
 #floorplanner-controls {
   position: absolute;
+  z-index: 10; /* Ensure controls are above the canvas and reference image */
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  padding: 5px;
+  border-radius: 4px;
   left: 0;
   top: 0;
   margin: 20px 0;
-  padding: 0 20px; 
+  padding: 0 20px;
   width: 100%;
 }
 
@@ -153,4 +158,132 @@ div {
   opacity: 0;
   cursor: inherit;
   display: block;
+}
+
+/* Wall color presets */
+.wall-color-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.wall-color-presets .color-preset {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 2px solid #ccc;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.wall-color-presets .color-preset:hover {
+  transform: scale(1.1);
+  border-color: #999;
+}
+
+.wall-color-presets .color-preset.active {
+  border: 3px solid #000;
+}
+
+.color-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.color-preset {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-preset:hover {
+  transform: scale(1.1);
+  border-color: #999;
+}
+
+.color-preset.active {
+  border: 2px solid #000;
+}
+
+/* Enhanced color picker */
+.color-picker-container {
+  display: flex;
+  align-items: center;
+}
+
+#wall-color-picker {
+  height: 40px;
+  padding: 5px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+#color-preview {
+  width: 40px;
+  height: 40px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+#wall-color-opacity {
+  display: inline-block;
+  width: 80%;
+  vertical-align: middle;
+}
+
+#opacity-value {
+  display: inline-block;
+  width: 15%;
+  text-align: right;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+.color-component {
+  text-align: center;
+}
+
+/* Reference image controls */
+.position-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.position-controls-middle {
+  display: flex;
+  justify-content: center;
+  margin: 5px 0;
+}
+
+.position-btn {
+  margin: 2px;
+  width: 40px;
+  height: 40px;
+}
+
+#reference-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* Allow clicking through the image */
+  z-index: 1; /* Place below the drawing elements but above the canvas */
+}
+
+#floorplanner-canvas {
+  position: relative;
+  z-index: 2; /* Ensure canvas interactions work */
+}
+
+/* Make sure buttons in the floorplanner are clickable */
+#floorplanner-controls button {
+  position: relative;
+  z-index: 11;
 }

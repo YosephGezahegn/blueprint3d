@@ -108,24 +108,94 @@
             <div class="panel panel-default">
               <div class="panel-heading">Adjust Wall</div>
               <div class="panel-body" style="color: #333333">
-                <div class="col-sm-6" style="padding: 3px">
-                  <a href="#" class="thumbnail texture-select-thumbnail" texture-url="rooms/textures/marbletiles.jpg" texture-stretch="false" texture-scale="300">
-                    <img alt="Thumbnail marbletiles" src="rooms/thumbnails/thumbnail_marbletiles.jpg" />
-                  </a>
-                </div>
-                <div class="col-sm-6" style="padding: 3px">
-                  <a href="#" class="thumbnail texture-select-thumbnail" texture-url="rooms/textures/wallmap_yellow.png" texture-stretch="true" texture-scale="">
-                    <img alt="Thumbnail wallmap yellow" src="rooms/thumbnails/thumbnail_wallmap_yellow.png" />
-                  </a>
-                </div>
-                <div class="col-sm-6" style="padding: 3px">
-                  <a href="#" class="thumbnail texture-select-thumbnail" texture-url="rooms/textures/light_brick.jpg" texture-stretch="false" texture-scale="100">
-                    <img alt="Thumbnail light brick" src="rooms/thumbnails/thumbnail_light_brick.jpg" />
-                  </a>
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#wall-textures-tab" aria-controls="wall-textures-tab" role="tab" data-toggle="tab">Textures</a></li>
+                  <li role="presentation"><a href="#wall-colors-tab" aria-controls="wall-colors-tab" role="tab" data-toggle="tab">Colors</a></li>
+                </ul>
+                
+                <div class="tab-content" style="margin-top: 15px;">
+                  <!-- Wall Textures Tab -->
+                  <div role="tabpanel" class="tab-pane active" id="wall-textures-tab">
+                    <div class="col-sm-6" style="padding: 3px">
+                      <a href="#" class="thumbnail texture-select-thumbnail" texture-url="rooms/textures/marbletiles.jpg" texture-stretch="false" texture-scale="300">
+                        <img alt="Thumbnail marbletiles" src="rooms/thumbnails/thumbnail_marbletiles.jpg" />
+                      </a>
+                    </div>
+                    <div class="col-sm-6" style="padding: 3px">
+                      <a href="#" class="thumbnail texture-select-thumbnail" texture-url="rooms/textures/wallmap_yellow.png" texture-stretch="true" texture-scale="">
+                        <img alt="Thumbnail wallmap yellow" src="rooms/thumbnails/thumbnail_wallmap_yellow.png" />
+                      </a>
+                    </div>
+                    <div class="col-sm-6" style="padding: 3px">
+                      <a href="#" class="thumbnail texture-select-thumbnail" texture-url="rooms/textures/light_brick.jpg" texture-stretch="false" texture-scale="100">
+                        <img alt="Thumbnail light brick" src="rooms/thumbnails/thumbnail_light_brick.jpg" />
+                      </a>
+                    </div>
+                    <div class="col-sm-6" style="padding: 3px">
+                      <a href="#" class="thumbnail texture-select-thumbnail" texture-url="rooms/textures/wallmap.png" texture-stretch="true" texture-scale="">
+                        <img alt="Thumbnail wallmap" src="rooms/thumbnails/thumbnail_wallmap.png" />
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <!-- Wall Colors Tab -->
+                  <div role="tabpanel" class="tab-pane" id="wall-colors-tab">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="form-group">
+                          <label for="wall-color-picker">Select Wall Color:</label>
+                          <div class="input-group color-picker-container">
+                            <input type="color" id="wall-color-picker" class="form-control" value="#ffffff">
+                            <span class="input-group-addon" id="color-preview" style="background-color: #ffffff;"></span>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="wall-color-opacity">Opacity:</label>
+                          <input type="range" id="wall-color-opacity" class="form-control" min="0" max="100" value="100">
+                          <span id="opacity-value">100%</span>
+                        </div>
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-xs-4">
+                              <label for="wall-color-r">R:</label>
+                              <input type="number" id="wall-color-r" class="form-control color-component" min="0" max="255" value="255">
+                            </div>
+                            <div class="col-xs-4">
+                              <label for="wall-color-g">G:</label>
+                              <input type="number" id="wall-color-g" class="form-control color-component" min="0" max="255" value="255">
+                            </div>
+                            <div class="col-xs-4">
+                              <label for="wall-color-b">B:</label>
+                              <input type="number" id="wall-color-b" class="form-control color-component" min="0" max="255" value="255">
+                            </div>
+                          </div>
+                        </div>
+                        <button id="apply-wall-color" class="btn btn-primary">Apply Color</button>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-top: 15px;">
+                      <div class="col-sm-12">
+                        <h5>Quick Colors:</h5>
+                        <div class="color-presets">
+                          <div class="color-preset" data-color="#ffffff" style="background-color: #ffffff;"></div>
+                          <div class="color-preset" data-color="#f5f5f5" style="background-color: #f5f5f5;"></div>
+                          <div class="color-preset" data-color="#e0e0e0" style="background-color: #e0e0e0;"></div>
+                          <div class="color-preset" data-color="#d3d3d3" style="background-color: #d3d3d3;"></div>
+                          <div class="color-preset" data-color="#c2c2c2" style="background-color: #c2c2c2;"></div>
+                          <div class="color-preset" data-color="#f8e0e0" style="background-color: #f8e0e0;"></div>
+                          <div class="color-preset" data-color="#f5f5dc" style="background-color: #f5f5dc;"></div>
+                          <div class="color-preset" data-color="#e6e6fa" style="background-color: #e6e6fa;"></div>
+                          <div class="color-preset" data-color="#e0ffff" style="background-color: #e0ffff;"></div>
+                          <div class="color-preset" data-color="#f0f8ff" style="background-color: #f0f8ff;"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
 
         <!-- Right Column -->
@@ -199,6 +269,16 @@
                 Delete Walls
               </button>
               <span class="pull-right">
+                <div class="btn-group">
+                  <button id="floorplan-reference-image-btn" class="btn btn-sm btn-info" data-toggle="modal" data-target="#reference-image-modal">
+                    <span class="glyphicon glyphicon-picture"></span>
+                    Reference Image
+                  </button>
+                  <button id="wall-color-btn" class="btn btn-sm btn-default" data-toggle="modal" data-target="#wall-color-modal">
+                    <span class="glyphicon glyphicon-tint"></span>
+                    Wall Color
+                  </button>
+                </div>
                 <button class="btn btn-primary btn-sm" id="update-floorplan">Done &raquo;</button>
               </span>
 
@@ -218,6 +298,133 @@
       
         </div>
         <!-- End Right Column -->
+      </div>
+    </div>
+
+    <!-- Reference Image Modal -->
+    <div class="modal fade" id="reference-image-modal" tabindex="-1" role="dialog" aria-labelledby="reference-image-modal-label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="reference-image-modal-label">Floor Plan Reference Image</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="reference-image-file">Upload Floor Plan Image:</label>
+                  <input type="file" id="reference-image-file" accept="image/*" class="form-control">
+                </div>
+                <div id="reference-image-controls" style="display: none;">
+                  <div class="form-group">
+                    <label>Image Opacity: <span id="opacity-value-ref">50%</span></label>
+                    <input type="range" id="reference-image-opacity" min="10" max="100" value="50" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label>Scale:</label>
+                    <div class="input-group">
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="scale-down-btn">
+                          <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                      </span>
+                      <input type="number" id="reference-image-scale" class="form-control" value="100" min="10" max="200">
+                      <span class="input-group-addon">%</span>
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="scale-up-btn">
+                          <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Position Adjustment:</label>
+                    <div class="position-controls">
+                      <button id="move-up-btn" class="btn btn-default position-btn">
+                        <span class="glyphicon glyphicon-arrow-up"></span>
+                      </button>
+                      <div class="position-controls-middle">
+                        <button id="move-left-btn" class="btn btn-default position-btn">
+                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        </button>
+                        <button id="move-center-btn" class="btn btn-default position-btn">
+                          <span class="glyphicon glyphicon-screenshot"></span>
+                        </button>
+                        <button id="move-right-btn" class="btn btn-default position-btn">
+                          <span class="glyphicon glyphicon-arrow-right"></span>
+                        </button>
+                      </div>
+                      <button id="move-down-btn" class="btn btn-default position-btn">
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" id="reference-image-visible" checked> Show Reference Image
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" id="remove-reference-image" style="display: none;">Remove Image</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wall Color Modal -->
+    <div class="modal fade" id="wall-color-modal" tabindex="-1" role="dialog" aria-labelledby="wall-color-modal-label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="wall-color-modal-label">Wall Color Settings</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="wall-draw-color-picker">Wall Color:</label>
+                  <div class="input-group color-picker-container">
+                    <input type="color" id="wall-draw-color-picker" class="form-control" value="#8A2BE2">
+                    <span class="input-group-addon" id="wall-color-preview" style="background-color: #8A2BE2;"></span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="wall-hover-color-picker">Wall Hover Color:</label>
+                  <div class="input-group color-picker-container">
+                    <input type="color" id="wall-hover-color-picker" class="form-control" value="#9370DB">
+                    <span class="input-group-addon" id="wall-hover-color-preview" style="background-color: #9370DB;"></span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <h5>Preset Colors:</h5>
+                  <div class="wall-color-presets">
+                    <div class="color-preset" data-wall="#8A2BE2" data-hover="#9370DB" style="background-color: #8A2BE2;"></div>
+                    <div class="color-preset" data-wall="#FF4500" data-hover="#FF6347" style="background-color: #FF4500;"></div>
+                    <div class="color-preset" data-wall="#32CD32" data-hover="#7CFC00" style="background-color: #32CD32;"></div>
+                    <div class="color-preset" data-wall="#1E90FF" data-hover="#00BFFF" style="background-color: #1E90FF;"></div>
+                    <div class="color-preset" data-wall="#FF1493" data-hover="#FF69B4" style="background-color: #FF1493;"></div>
+                    <div class="color-preset" data-wall="#FFD700" data-hover="#FFFF00" style="background-color: #FFD700;"></div>
+                    <div class="color-preset" data-wall="#000000" data-hover="#444444" style="background-color: #000000;"></div>
+                    <div class="color-preset" data-wall="#dddddd" data-hover="#008cba" style="background-color: #dddddd;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="apply-wall-colors">Apply Colors</button>
+          </div>
+        </div>
       </div>
     </div>
 
