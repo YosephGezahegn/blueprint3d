@@ -258,27 +258,25 @@
 
               <button id="move" class="btn btn-sm btn-default">
                 <span class="glyphicon glyphicon-move"></span>
-                Move Walls
+                Move
               </button>
               <button id="draw" class="btn btn-sm btn-default">
                 <span class="glyphicon glyphicon-pencil"></span>
-                Draw Walls
+                Draw
               </button>
               <button id="delete" class="btn btn-sm btn-default">
                 <span class="glyphicon glyphicon-remove"></span>
-                Delete Walls
+                Delete
+              </button>
+              <button id="reference-image-btn" class="btn btn-default btn-sm" data-toggle="modal" data-target="#reference-image-modal">
+                <span class="glyphicon glyphicon-picture"></span>
+                Reference Image
+              </button>
+              <button id="wall-color-btn" class="btn btn-default btn-sm" data-toggle="modal" data-target="#wall-color-modal">
+                <span class="glyphicon glyphicon-tint"></span>
+                Wall Color
               </button>
               <span class="pull-right">
-                <div class="btn-group">
-                  <button id="floorplan-reference-image-btn" class="btn btn-sm btn-info" data-toggle="modal" data-target="#reference-image-modal">
-                    <span class="glyphicon glyphicon-picture"></span>
-                    Reference Image
-                  </button>
-                  <button id="wall-color-btn" class="btn btn-sm btn-default" data-toggle="modal" data-target="#wall-color-modal">
-                    <span class="glyphicon glyphicon-tint"></span>
-                    Wall Color
-                  </button>
-                </div>
                 <button class="btn btn-primary btn-sm" id="update-floorplan">Done &raquo;</button>
               </span>
 
@@ -374,55 +372,6 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-danger" id="remove-reference-image" style="display: none;">Remove Image</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Wall Color Modal -->
-    <div class="modal fade" id="wall-color-modal" tabindex="-1" role="dialog" aria-labelledby="wall-color-modal-label">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="wall-color-modal-label">Wall Color Settings</h4>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label for="wall-draw-color-picker">Wall Color:</label>
-                  <div class="input-group color-picker-container">
-                    <input type="color" id="wall-draw-color-picker" class="form-control" value="#8A2BE2">
-                    <span class="input-group-addon" id="wall-color-preview" style="background-color: #8A2BE2;"></span>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="wall-hover-color-picker">Wall Hover Color:</label>
-                  <div class="input-group color-picker-container">
-                    <input type="color" id="wall-hover-color-picker" class="form-control" value="#9370DB">
-                    <span class="input-group-addon" id="wall-hover-color-preview" style="background-color: #9370DB;"></span>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <h5>Preset Colors:</h5>
-                  <div class="wall-color-presets">
-                    <div class="color-preset" data-wall="#8A2BE2" data-hover="#9370DB" style="background-color: #8A2BE2;"></div>
-                    <div class="color-preset" data-wall="#FF4500" data-hover="#FF6347" style="background-color: #FF4500;"></div>
-                    <div class="color-preset" data-wall="#32CD32" data-hover="#7CFC00" style="background-color: #32CD32;"></div>
-                    <div class="color-preset" data-wall="#1E90FF" data-hover="#00BFFF" style="background-color: #1E90FF;"></div>
-                    <div class="color-preset" data-wall="#FF1493" data-hover="#FF69B4" style="background-color: #FF1493;"></div>
-                    <div class="color-preset" data-wall="#FFD700" data-hover="#FFFF00" style="background-color: #FFD700;"></div>
-                    <div class="color-preset" data-wall="#000000" data-hover="#444444" style="background-color: #000000;"></div>
-                    <div class="color-preset" data-wall="#dddddd" data-hover="#008cba" style="background-color: #dddddd;"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="apply-wall-colors">Apply Colors</button>
           </div>
         </div>
       </div>

@@ -88,8 +88,8 @@ div {
 }
 
 #floorplanner {
-  position: relative;
   display: none;
+  position: relative;
 }
 
 #add-items {
@@ -115,14 +115,10 @@ div {
 
 #floorplanner-controls {
   position: absolute;
-  z-index: 10; /* Ensure controls are above the canvas and reference image */
-  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-  padding: 5px;
-  border-radius: 4px;
   left: 0;
   top: 0;
   margin: 20px 0;
-  padding: 0 20px;
+  padding: 0 20px; 
   width: 100%;
 }
 
@@ -161,31 +157,6 @@ div {
 }
 
 /* Wall color presets */
-.wall-color-presets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.wall-color-presets .color-preset {
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  border: 2px solid #ccc;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.wall-color-presets .color-preset:hover {
-  transform: scale(1.1);
-  border-color: #999;
-}
-
-.wall-color-presets .color-preset.active {
-  border: 3px solid #000;
-}
-
 .color-presets {
   display: flex;
   flex-wrap: wrap;
