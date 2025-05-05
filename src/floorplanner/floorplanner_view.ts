@@ -28,9 +28,9 @@ module BP3D.Floorplanner {
   const wallWidth = 5;
   const wallWidthHover = 7;
   const wallColor = "#dddddd"
-  const wallColorHover = "#008cba"
+  const wallColorHover = "#0aba00"
   const edgeColor = "#888888"
-  const edgeColorHover = "#008cba"
+  const edgeColorHover = "#0aba00"
   const edgeWidth = 1
 
   const deleteColor = "#ff0000";
@@ -39,7 +39,7 @@ module BP3D.Floorplanner {
   const cornerRadius = 0
   const cornerRadiusHover = 7
   const cornerColor = "#cccccc"
-  const cornerColorHover = "#008cba"
+  const cornerColorHover = "#0aba00"
 
   /**
    * The View to be used by a Floorplanner to render in/interact with.
